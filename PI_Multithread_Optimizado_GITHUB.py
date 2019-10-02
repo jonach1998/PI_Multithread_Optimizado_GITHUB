@@ -4,6 +4,7 @@ from decimal import Decimal, getcontext
 from math import factorial
 from queue import Queue
 from threading import Thread
+from tkinter import *
 
 # cantidad de hilos
 cantidadhilos = []
@@ -12,6 +13,16 @@ cantidadhilos = []
 resultadohilo = Queue()
 dividendovar = Queue()
 divisorvar = Queue()
+
+prin = Tk()
+prin.title("Prueba de GUI")
+prin.geometry("1500x900")
+prin.resizable(False, False)
+
+hilosnum = IntVar()
+knum = []
+hiloactual = IntVar()
+okVar = IntVar()
 
 
 def dividendo(ks, dividendoqueue):
@@ -24,7 +35,6 @@ def divisor(ks, divisorqueue):
         pow(640320, (Decimal((3 * ks) + (3 / 2)))))))
 
 
-# calculo de pi
 def serie(kin, outqueue, precision):
     getcontext().prec = precision
     resultado = 0
@@ -43,16 +53,76 @@ def serie(kin, outqueue, precision):
     outqueue.put(pi)
 
 
-hilos = int(input("Favor elegir la cantidad de hilos a usar: "))
-for hilo in range(0, hilos):
-    print("Elija el valor de K para el hilo " + str(hilo + 1))
-    k = int(input())
-    prec = 14 * k
-    cantidadhilos.append(hilo)
-    cantidadhilos[hilo] = Thread(target=serie, args=(k, resultadohilo, prec))
-    cantidadhilos[hilo].start()
-for hilo in range(0, hilos):
-    cantidadhilos[hilo].join()
-    print(f"El hilo {hilo + 1} calculó el valor: {resultadohilo.get()}")
+def iniciarhilo():
+    prec = 14 * int(knum[int(hiloactual.get())].get())
+    cantidadhilos.append(int(hiloactual.get()))
+    cantidadhilos[int(hiloactual.get())] = Thread(target=serie, args=(knum[int(hiloactual.get())].get(), resultadohilo, prec))
+    cantidadhilos[int(hiloactual.get())].start()
 
-input("Toque una tecla para salir...")
+
+def siguiente():
+    okVar.set(1)
+    iniciarhilo()
+
+
+def insertarhilos():
+    contador = 5
+    for hilo in range(0, int(hilosnum.get())):
+        knum.append(hilo)
+        knum[hilo] = IntVar()
+        Label(prin, text=f"Elija el valor de K para el hilo {hilo}").grid(row=contador, column=1, padx=10, pady=10)
+        k = Entry(prin, textvariable=knum[hilo])
+        k.grid(row=contador, column=2)
+        k.config(fg="red", justify="center")
+        contador += 1
+        hiloactual.set(hilo)
+        boton2 = Button(prin, text="Ingresar K", command=siguiente)
+        boton2.grid(row=contador, column=2)
+        contador += 1
+        boton2.wait_variable(okVar)
+    contador2 = contador+5
+    for hilo in range(0, int(hilosnum.get())):
+        cantidadhilos[hilo].join()
+        Label(prin, text=f"El hilo {hilo} calculó el valor: {resultadohilo.get()}").grid(row=contador2, column=2, padx=0, pady=0)
+        contador2 += 1
+
+
+Label(prin, text="Favor elegir la cantidad de hilos a usar:").grid(row=1, column=1, padx=10, pady=10)
+hilos = Entry(prin, textvariable=hilosnum)
+hilos.grid(row=1, column=2)
+hilos.config(fg="red", justify="center")
+boton1 = Button(prin, text="Ingresar cantidad de hilos", command=insertarhilos)
+boton1.grid(row=4, column=2)
+
+
+prin.mainloop()
+
+# # cantidad de hilos
+#
+#
+# # valores de salida de los hilos
+
+#
+#
+
+#
+#
+# # calculo de pi
+
+#
+#
+# hilos = int(input("Favor elegir la cantidad de hilos a usar: "))
+# for hilo in range(0, hilos):
+#     print("Elija el valor de K para el hilo " + str(hilo + 1))
+#     k = int(input())
+#     prec = 14 * k
+#     cantidadhilos.append(hilo)
+#     cantidadhilos[hilo] = Thread(target=serie, args=(k, resultadohilo, prec))
+#     cantidadhilos[hilo].start()
+# for hilo in range(0, hilos):
+#     cantidadhilos[hilo].join()
+#     print(f"El hilo {hilo + 1} calculó el valor: {resultadohilo.get()}")
+#
+#
+#
+# input("Toque una tecla para salir...")
