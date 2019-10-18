@@ -13,7 +13,7 @@ cantidadhilos = []
 resultadohilo = Queue()
 dividendovar = Queue()
 divisorvar = Queue()
-resultado = []
+resultadof = []
 
 prin = Tk()
 prin.title("Prueba de GUI")
@@ -44,8 +44,8 @@ def serie(kin, outqueue, precision):
             threaddivisor = Thread(target=divisor, args=(ks, divisorvar))
             threaddividendo.start()
             threaddivisor.start()
-            threaddividendo.join()
-            threaddivisor.join()
+            # threaddividendo.join()
+            # threaddivisor.join()
             resultado += Decimal(dividendovar.get() / divisorvar.get())
         pi = Decimal(1 / (12 * resultado))
     else:
@@ -54,9 +54,10 @@ def serie(kin, outqueue, precision):
 
 
 def iniciarhilo():
-    prec = 14 * int(knum[int(hiloactual.get())].get())
+    prec = 14 * int(knum[int(hiloactual.get())].get() * 50)
     cantidadhilos.append(int(hiloactual.get()))
-    cantidadhilos[int(hiloactual.get())] = Thread(target=serie, args=(knum[int(hiloactual.get())].get(), resultadohilo, prec))
+    cantidadhilos[int(hiloactual.get())] = Thread(target=serie,
+                                                  args=(knum[int(hiloactual.get())].get(), resultadohilo, prec))
     cantidadhilos[int(hiloactual.get())].start()
 
 
@@ -80,14 +81,19 @@ def insertarhilos():
         boton2.grid(row=contador, column=2)
         contador += 1
         boton2.wait_variable(okVar)
-    contador2 = contador+5
+    Label(prin, text=f"Calculo realizado con exito").grid(
+        row=contador, column=1, padx=10, pady=10)
+    Label(prin, text=f"Cierre esta ventana").grid(
+        row=contador+1, column=1, padx=10, pady=10)
+    Label(prin, text=f"Revise el documento resultadof.txt").grid(
+        row=contador+2, column=1, padx=10, pady=10)
     for hilo in range(0, int(hilosnum.get())):
         cantidadhilos[hilo].join()
-        resultado.append(f"El hilo {hilo} calculó el valor: {resultadohilo.get()} \n")
-    print(resultado)
-    with open("resultado.txt", "w+") as file:
-        for line in range(0, len(resultado)):
-            file.write(resultado[line])
+        resultadof.append(f"El hilo {hilo} calculó el valor: {resultadohilo.get()} \n")
+    # print(resultadof)
+    with open("resultadof.txt", "w+") as file:
+        for line in range(0, len(resultadof)):
+            file.write(resultadof[line])
 
 
 Label(prin, text="Favor elegir la cantidad de hilos a usar:").grid(row=1, column=1, padx=10, pady=10)
@@ -96,6 +102,5 @@ hilos.grid(row=1, column=2)
 hilos.config(fg="red", justify="center")
 boton1 = Button(prin, text="Ingresar cantidad de hilos", command=insertarhilos)
 boton1.grid(row=4, column=2)
-
 
 prin.mainloop()
