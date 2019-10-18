@@ -13,10 +13,10 @@ cantidadhilos = []
 resultadohilo = Queue()
 dividendovar = Queue()
 divisorvar = Queue()
+resultado = []
 
 prin = Tk()
 prin.title("Prueba de GUI")
-prin.geometry("1500x900")
 prin.resizable(False, False)
 
 hilosnum = IntVar()
@@ -83,8 +83,11 @@ def insertarhilos():
     contador2 = contador+5
     for hilo in range(0, int(hilosnum.get())):
         cantidadhilos[hilo].join()
-        Label(prin, text=f"El hilo {hilo} calculó el valor: {resultadohilo.get()}").grid(row=contador2, column=2, padx=0, pady=0)
-        contador2 += 1
+        resultado.append(f"El hilo {hilo} calculó el valor: {resultadohilo.get()} \n")
+    print(resultado)
+    with open("resultado.txt", "w+") as file:
+        for line in range(0, len(resultado)):
+            file.write(resultado[line])
 
 
 Label(prin, text="Favor elegir la cantidad de hilos a usar:").grid(row=1, column=1, padx=10, pady=10)
