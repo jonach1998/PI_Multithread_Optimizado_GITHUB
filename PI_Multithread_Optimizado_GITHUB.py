@@ -4,7 +4,7 @@ from decimal import Decimal, getcontext
 from math import factorial
 from queue import Queue
 from threading import Thread
-from tkinter import *
+from tkinter import ttk, Tk, IntVar, Button, Label, Frame, Entry
 
 # cantidad de hilos
 cantidadhilos = []
