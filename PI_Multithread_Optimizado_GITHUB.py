@@ -57,7 +57,7 @@ def iniciarhilo():
     prec = 14 * int(knum[int(hiloactual.get())].get() * 50)
     cantidadhilos.append(int(hiloactual.get()))
     cantidadhilos[int(hiloactual.get())] = Thread(target=serie,
-                                                  args=(knum[int(hiloactual.get())].get(), resultadohilo, prec))
+                                                  args=(knum[int(hiloactual.get())].get() * 50, resultadohilo, prec))
     cantidadhilos[int(hiloactual.get())].start()
 
 
